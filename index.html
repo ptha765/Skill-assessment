@@ -4,34 +4,45 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Skill Assessment System</title>
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
 :root{--P:#1B3A6B;--P2:#2555A0;--A:#E8A020;--A2:#F5C060;--G:#1B8A5A;--R:#C0392B;--B:#2563EB;--bg:#F4F6FA;--card:#FFF;--bd:#D8E2F0;--tx:#1A2940;--mu:#6B7E9A}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh}
+body{font-family:'Prompt',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh}
 .hdr{background:linear-gradient(135deg,var(--P),var(--P2));color:#fff;box-shadow:0 4px 20px rgba(27,58,107,.3)}
 .hdr-in{max-width:960px;margin:0 auto;padding:15px 24px;display:flex;align-items:center;gap:13px}
 .hdr-in img{height:44px;border-radius:6px}
 .hdr-in h1{font-size:1.3rem;font-weight:800}
 .hdr-in p{font-size:.8rem;opacity:.75;margin-top:1px}
 .badge{margin-left:auto;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:20px;padding:4px 13px;font-size:.77rem;font-weight:600;white-space:nowrap}
-.sbar{background:#fff;border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.06)}
-.sbar-in{max-width:960px;margin:0 auto;padding:0 24px;display:flex}
-.si{flex:1;display:flex;align-items:center;gap:8px;padding:12px 10px;color:var(--mu);font-size:.87rem;border-bottom:3px solid transparent;transition:all .2s}
-.si.on{color:var(--P);border-color:var(--A);font-weight:700}
-.si.dn{color:var(--G)}
-.sn{width:25px;height:25px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.77rem;font-weight:700;flex-shrink:0;background:var(--bd);color:var(--mu)}
+/* ── Sidebar Layout ── */
+.app-layout{display:flex;min-height:calc(100vh - 74px)}
+.sidebar{width:220px;flex-shrink:0;background:linear-gradient(180deg,var(--P) 0%,#122a50 100%);min-height:calc(100vh - 74px);position:sticky;top:0;overflow-y:auto;z-index:200}
+.sidebar-brand{padding:18px 16px 10px;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:6px}
+.sidebar-brand p{color:rgba(255,255,255,.5);font-size:.69rem;margin-top:2px}
+.sidebar-brand h3{color:#fff;font-size:.82rem;font-weight:700}
+.sidebar-nav{padding:8px 0}
+.si{display:flex;align-items:center;gap:10px;padding:12px 16px;color:rgba(255,255,255,.55);font-size:.85rem;cursor:pointer;transition:all .18s;border-left:3px solid transparent;margin:2px 0}
+.si:hover{color:#fff;background:rgba(255,255,255,.08)}
+.si.on{color:#fff;background:rgba(255,255,255,.12);border-left-color:var(--A);font-weight:700}
+.si.dn{color:rgba(255,255,255,.7)}
+.si.dn .sn{background:var(--G)}
+.sn{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.74rem;font-weight:700;flex-shrink:0;background:rgba(255,255,255,.18);color:#fff}
 .si.on .sn{background:var(--A);color:#fff}
-.si.dn .sn{background:var(--G);color:#fff}
-.main{max-width:960px;margin:0 auto;padding:24px}
+/* Hamburger */
+.ham-btn{display:none;position:fixed;top:15px;right:16px;z-index:500;background:var(--P);color:#fff;border:none;border-radius:8px;width:40px;height:40px;font-size:1.1rem;cursor:pointer;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:199}
+.sidebar-overlay.on{display:block}
+/* Content area */
+.main{flex:1;min-width:0;padding:24px;max-width:900px}
 .card{background:var(--card);border-radius:12px;box-shadow:0 2px 12px rgba(27,58,107,.10);border:1px solid var(--bd);margin-bottom:18px;padding:22px}
 .ct{font-size:.98rem;font-weight:700;color:var(--P);margin-bottom:16px;display:flex;align-items:center;gap:7px}
 .ct i{color:var(--A)}
 .fg{margin-bottom:14px}
 label{display:block;font-size:.81rem;font-weight:600;color:var(--mu);margin-bottom:4px}
-input,select{width:100%;padding:9px 13px;border:1.5px solid var(--bd);border-radius:8px;font-family:'Sarabun',sans-serif;font-size:.92rem;color:var(--tx);background:#fff;transition:border-color .2s}
+input,select{width:100%;padding:9px 13px;border:1.5px solid var(--bd);border-radius:8px;font-family:'Prompt',sans-serif;font-size:.92rem;color:var(--tx);background:#fff;transition:border-color .2s}
 input:focus,select:focus{outline:none;border-color:var(--P2)}
 input[readonly]{background:#F8FAFC}
 .fr{display:grid;grid-template-columns:1fr 1fr;gap:13px}
@@ -53,7 +64,7 @@ input[readonly]{background:#F8FAFC}
 .sr-hint{font-size:.77rem;color:var(--mu);margin-top:3px}
 .sr-hint.ok{color:var(--G)}
 .sr-hint.ng{color:var(--R)}
-.btn{padding:9px 20px;border-radius:8px;border:none;font-family:'Sarabun',sans-serif;font-size:.89rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .18s}
+.btn{padding:9px 20px;border-radius:8px;border:none;font-family:'Prompt',sans-serif;font-size:.89rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .18s}
 .bp{background:var(--P);color:#fff}
 .bp:hover{background:var(--P2)}
 .ba{background:var(--A);color:#fff}
@@ -69,7 +80,7 @@ input[readonly]{background:#F8FAFC}
 .stbl tr:nth-child(even){background:#F8FAFF}
 .stbl td{padding:8px 12px;border-bottom:1px solid var(--bd);font-size:.87rem;vertical-align:middle}
 .sc2{font-family:monospace;font-size:.74rem;color:var(--mu);background:#F1F5F9;padding:1px 5px;border-radius:3px}
-.lv{width:68px;padding:4px 7px;border:1.5px solid var(--bd);border-radius:6px;font-family:'Sarabun',sans-serif;font-size:.87rem;cursor:pointer}
+.lv{width:68px;padding:4px 7px;border:1.5px solid var(--bd);border-radius:6px;font-family:'Prompt',sans-serif;font-size:.87rem;cursor:pointer}
 .lv:focus{outline:none;border-color:var(--P2)}
 .eb{display:inline-flex;align-items:center;justify-content:center;width:25px;height:25px;border-radius:50%;background:var(--P);color:#fff;font-weight:700;font-size:.8rem}
 .gc{text-align:center;font-weight:700;font-size:.87rem}
@@ -106,7 +117,7 @@ input[readonly]{background:#F8FAFC}
 .bt{height:6px;background:var(--bd);border-radius:4px;overflow:hidden}
 .bf{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--P),var(--B))}
 .tb{display:flex;gap:3px;background:var(--bg);border-radius:8px;padding:3px;margin-bottom:13px}
-.tbb{flex:1;padding:6px;border-radius:6px;border:none;cursor:pointer;font-family:'Sarabun',sans-serif;font-size:.82rem;font-weight:600;background:transparent;color:var(--mu);transition:all .18s}
+.tbb{flex:1;padding:6px;border-radius:6px;border:none;cursor:pointer;font-family:'Prompt',sans-serif;font-size:.82rem;font-weight:600;background:transparent;color:var(--mu);transition:all .18s}
 .tbb.on{background:#fff;color:var(--P);box-shadow:0 2px 12px rgba(27,58,107,.10)}
 .tp{display:none}
 .tp.on{display:block}
@@ -129,14 +140,50 @@ input[readonly]{background:#F8FAFC}
 }
 .lang-btn {
   padding: 4px 11px; border-radius: 20px; border: 1.5px solid rgba(255,255,255,.25);
-  font-family: 'Sarabun', sans-serif; font-size: .78rem; font-weight: 600;
+  font-family: 'Prompt', sans-serif; font-size: .78rem; font-weight: 600;
   cursor: pointer; color: rgba(255,255,255,.7); background: rgba(255,255,255,.08);
   transition: all .18s;
 }
 .lang-btn:hover { background: rgba(255,255,255,.2); color: white; }
 .lang-btn.active { background: rgba(255,255,255,.25); color: white; border-color: rgba(255,255,255,.5); }
 
-@media(max-width:640px){.fr,.eg,.sg,.dg{grid-template-columns:1fr}.main{padding:13px}.card{padding:15px}.sbar-in{padding:0 6px}.si{padding:10px 5px;font-size:.77rem}.badge{display:none}}
+/* Mobile responsive */
+@media(max-width:900px){
+  .ham-btn{display:flex}
+  .sidebar{position:fixed;top:0;left:-240px;height:100vh;min-height:100vh;width:220px;transition:left .28s cubic-bezier(.4,0,.2,1);z-index:300;box-shadow:4px 0 24px rgba(0,0,0,.18)}
+  .sidebar.open{left:0}
+  .app-layout{display:block}
+  .main{padding:16px}
+}
+@media(max-width:640px){
+  .fr,.eg,.sg,.dg{grid-template-columns:1fr}
+  .main{padding:13px}
+  .card{padding:15px}
+  .badge{display:none}
+  .hdr-in{padding:12px 52px 12px 16px}
+}
+
+/* ── RBAC Login Overlay ─────────────────────────────────────────── */
+.login-overlay{position:fixed;inset:0;background:linear-gradient(135deg,#0d2137 0%,#1B3A6B 60%,#122a50 100%);z-index:9999;display:flex;align-items:center;justify-content:center}
+.login-overlay.hid{display:none}
+.login-box{background:#fff;border-radius:20px;padding:40px 36px;width:100%;max-width:400px;box-shadow:0 24px 64px rgba(0,0,0,.35);text-align:center}
+.login-title{font-size:1.3rem;font-weight:800;color:var(--P);margin-bottom:4px}
+.login-sub{font-size:.82rem;color:var(--mu);margin-bottom:28px}
+.login-inp{width:100%;padding:13px 16px;border:2px solid #e0e0e0;border-radius:12px;font-family:'Prompt',sans-serif;font-size:.95rem;outline:none;box-sizing:border-box;transition:border .2s;text-align:center;letter-spacing:2px;font-weight:600}
+.login-inp:focus{border-color:var(--P)}
+.login-btn{width:100%;padding:13px;background:var(--P);color:#fff;border:none;border-radius:12px;font-family:'Prompt',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;margin-top:14px;transition:background .2s}
+.login-btn:hover{background:#122a50}
+.login-err{color:#e53935;font-size:.82rem;margin-top:10px;min-height:20px}
+.role-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:.78rem;font-weight:700;margin:0 4px}
+.role-mgr{background:#e3f2fd;color:#1565c0}
+.role-hr{background:#f3e5f5;color:#6a1b9a}
+.gap-table{width:100%;border-collapse:collapse;font-size:.82rem}
+.gap-table th{background:var(--P);color:#fff;padding:10px 12px;text-align:left}
+.gap-table td{padding:9px 12px;border-bottom:1px solid #eee}
+.gap-table tr:hover td{background:#f5f8ff}
+.gap-neg{color:#e53935;font-weight:700}.gap-pos{color:#2e7d32;font-weight:700}.gap-zero{color:var(--mu)}
+.logout-btn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;padding:4px 10px;border-radius:20px;font-size:.75rem;cursor:pointer;font-family:'Prompt',sans-serif;transition:background .18s}
+.logout-btn:hover{background:rgba(255,255,255,.28)}
 </style>
 </head>
 <body>
@@ -154,18 +201,75 @@ input[readonly]{background:#F8FAFC}
   </div>
 </div>
 
-<div class="sbar">
-  <div class="sbar-in">
-    <div class="si on" id="s1"><div class="sn">1</div><span id="s1-lbl">ระบุพนักงาน</span></div>
-    <div class="si" id="s2"><div class="sn">2</div><span id="s2-lbl">ประเมิน Skill</span></div>
-    <div class="si" id="s3"><div class="sn">3</div><span id="s3-lbl">ผลการประเมิน</span></div>
-    <div class="si" id="s4"><div class="sn">4</div><span id="s4-lbl">Dashboard</span></div>
+<!-- ══ LOGIN OVERLAY ══ -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <img src="data:image/jpeg;base64,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" style="height:80px;margin-bottom:10px;object-fit:contain;max-width:280px" alt="Nippon Steel GSteel GJS">
+    <div class="login-title">Skill Assessment System</div>
+    <div class="login-sub">GJS / GST — Human Resource Development<br>กรุณาลงชื่อเข้าใช้</div>
+    <input class="login-inp" id="loginId" type="text" placeholder="รหัสพนักงาน เช่น 66035"
+      onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('loginPw').focus();}" autocomplete="off" />
+    <input class="login-inp" id="loginPw" type="password" placeholder="รหัสผ่าน (ครั้งแรก = รหัสพนักงาน)"
+      onkeydown="if(event.key==='Enter')doLogin()" autocomplete="off" style="margin-top:8px" />
+    <button class="login-btn" onclick="doLogin()"><i class="fas fa-sign-in-alt"></i> เข้าสู่ระบบ</button>
+    <div class="login-err" id="loginErr"></div>
+    <p style="font-size:.75rem;color:var(--mu);margin-top:18px">ลืมรหัสผ่าน? ติดต่อ HRD เพื่อ Reset</p>
   </div>
 </div>
+<button class="ham-btn" id="hamBtn" onclick="toggleSidebar()" aria-label="เมนู"><i class="fas fa-bars"></i></button>
 
-<div class="main">
+<!-- ══ CHANGE PASSWORD MODAL ══ -->
+<div id="changePwModal" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.7);align-items:center;justify-content:center;padding:16px">
+  <div style="background:#fff;border-radius:16px;padding:32px 28px;width:100%;max-width:380px;box-shadow:0 8px 40px rgba(0,0,0,.35);font-family:'Prompt',sans-serif">
+    <div style="text-align:center;margin-bottom:18px">
+      <div style="width:56px;height:56px;background:linear-gradient(135deg,#1B3A6B,#2D5FA6);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-bottom:10px">
+        <i class="fas fa-key" style="color:#fff;font-size:1.4rem"></i>
+      </div>
+      <h3 style="color:#1B3A6B;margin:0 0 4px;font-size:1.1rem;font-weight:700">ตั้งรหัสผ่านใหม่</h3>
+      <p style="color:#64748B;font-size:.8rem;margin:0">เพื่อความปลอดภัย กรุณาตั้งรหัสผ่านใหม่ก่อนเข้าใช้งาน</p>
+    </div>
+    <input id="cpNew" type="password" placeholder="รหัสผ่านใหม่ (อย่างน้อย 6 ตัวอักษร)"
+      style="width:100%;padding:10px 14px;border:1.5px solid #CBD5E1;border-radius:8px;font-family:'Prompt',sans-serif;font-size:.88rem;box-sizing:border-box;margin-bottom:10px;outline:none"
+      onkeydown="if(event.key==='Enter')document.getElementById('cpConf').focus()" />
+    <input id="cpConf" type="password" placeholder="ยืนยันรหัสผ่านใหม่"
+      style="width:100%;padding:10px 14px;border:1.5px solid #CBD5E1;border-radius:8px;font-family:'Prompt',sans-serif;font-size:.88rem;box-sizing:border-box;margin-bottom:6px;outline:none"
+      onkeydown="if(event.key==='Enter')doChangePw()" />
+    <div id="cpErr" style="color:#EF4444;font-size:.8rem;margin-bottom:10px;min-height:18px"></div>
+    <button onclick="doChangePw()" style="width:100%;padding:12px;background:linear-gradient(135deg,#1B3A6B,#2D5FA6);color:#fff;border:none;border-radius:10px;font-family:'Prompt',sans-serif;font-size:.92rem;font-weight:600;cursor:pointer;transition:opacity .2s" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">
+      <i class="fas fa-save"></i> บันทึกรหัสผ่าน
+    </button>
+  </div>
+</div>
+<div id="hdrUser" style="display:none;align-items:center;gap:8px;position:fixed;top:12px;right:14px;z-index:600;background:rgba(27,58,107,.92);padding:5px 10px;border-radius:24px;box-shadow:0 2px 8px rgba(0,0,0,.3)">
+  <span id="hdrUserName" style="color:#fff;font-size:.78rem;font-weight:600;font-family:'Prompt',sans-serif"></span>
+  <button class="logout-btn" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i> ออก</button>
+</div>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<div class="app-layout">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <h3>Skill Assessment</h3>
+    <p>GJS / GST — HRD</p>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="si on" id="s1" onclick="goPage(1)"><div class="sn">1</div><span id="s1-lbl">ระบุพนักงาน</span></div>
+    <div class="si" id="s2" onclick="goPage(2)"><div class="sn">2</div><span id="s2-lbl">ประเมิน Skill</span></div>
+    <div class="si" id="s3" onclick="goPage(3)"><div class="sn">3</div><span id="s3-lbl">ผลการประเมิน</span></div>
+    <div class="si" id="s4" onclick="goPage(4)"><div class="sn">4</div><span id="s4-lbl">Dashboard</span></div>
+    <div class="si hid" id="s5" onclick="goPage(5)"><div class="sn"><i class="fas fa-users" style="font-size:.72rem"></i></div><span id="s5-lbl">Team GAP</span></div>
+  </nav>
+</aside>
+
+<main class="main">
 
 <div id="pg1">
+  <div id="draftBanner" class="hid" style="background:linear-gradient(135deg,#FFF3CD,#FFE082);border:1.5px solid #F59E0B;border-radius:12px;padding:12px 16px;margin-bottom:14px;display:none;align-items:center;gap:12px">
+    <i class="fas fa-save" style="color:#F59E0B;font-size:1.3rem;flex-shrink:0"></i>
+    <div style="flex:1"><div style="font-weight:700;color:#92400E;font-size:.9rem">พบ Draft ที่บันทึกไว้</div><div id="draftInfo" style="font-size:.8rem;color:#B45309;margin-top:2px"></div></div>
+    <button class="btn" style="background:#F59E0B;color:#fff;padding:7px 14px;font-size:.82rem;border-radius:8px;flex-shrink:0" onclick="loadDraft()"><i class="fas fa-history"></i> ทำต่อ</button>
+    <button class="btn bo" style="padding:7px 10px;font-size:.82rem;border-radius:8px;flex-shrink:0" onclick="discardDraft()"><i class="fas fa-times"></i></button>
+  </div>
   <div class="card">
     <div class="ct"><i class="fas fa-user-circle"></i> ค้นหาพนักงาน</div>
     <div class="fg">
@@ -199,6 +303,7 @@ input[readonly]{background:#F8FAFC}
       <button id="btnStart" class="btn bp" onclick="goAssess()"><i class="fas fa-clipboard-check"></i> เริ่มประเมิน</button>
       <button id="btnClear" class="btn bo bs" onclick="clrForm()"><i class="fas fa-undo"></i> ล้าง</button>
       <button id="btnDash" class="btn bo bs" onclick="goPage(4)"><i class="fas fa-chart-bar"></i> Dashboard</button>
+      <button id="btnSaveDraft" class="btn bo bs" onclick="saveDraft()" style="display:none"><i class="fas fa-save"></i> Save Draft</button>
     </div>
   </div>
   <div class="card">
@@ -314,7 +419,72 @@ input[readonly]{background:#F8FAFC}
     </div>
   </div>
 </div>
+
+<!-- ══ PAGE 5: Manager Dashboard ══ -->
+<div id="pg5" class="hid">
+  <h2 class="card-t"><i class="fas fa-users" style="color:var(--P)"></i> Manager Dashboard</h2>
+
+  <!-- Team Status Section -->
+  <div class="card" id="teamStatusCard" style="margin-bottom:16px">
+    <div class="ct" style="margin-bottom:12px"><i class="fas fa-list-check"></i> สถานะการประเมินทีม</div>
+    <div id="teamStatusList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px">
+      <div style="text-align:center;padding:20px;color:var(--mu);grid-column:1/-1">กรุณา Login ก่อนเพื่อดูข้อมูลทีม</div>
+    </div>
+    <div style="margin-top:10px;display:flex;gap:14px;font-size:.79rem;color:var(--mu);flex-wrap:wrap">
+      <span><span style="color:#22C55E;font-size:1rem">&#10003;</span> ประเมินแล้ว</span>
+      <span><span style="color:#F59E0B;font-size:1rem">&#x231B;</span> ยังไม่ประเมิน</span>
+      <span style="margin-left:auto;font-style:italic">คลิกชื่อพนักงานเพื่อเริ่มประเมิน</span>
+    </div>
+  </div>
+
+  <!-- Radar Chart Section -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="ct" style="margin-bottom:12px"><i class="fas fa-project-diagram"></i> Team Skill GAP — Radar Chart</div>
+    <div id="radarEmpty" style="text-align:center;padding:30px;color:var(--mu)"><i class="fas fa-chart-bar" style="font-size:2rem;display:block;margin-bottom:8px"></i>ยังไม่มีข้อมูลการประเมิน</div>
+    <div id="radarWrap" class="hid" style="max-width:520px;margin:0 auto">
+      <canvas id="teamRadarChart" height="400"></canvas>
+    </div>
+    <div id="radarLegend" class="hid" style="display:flex;gap:16px;justify-content:center;margin-top:8px;font-size:.8rem;flex-wrap:wrap">
+      <span><span style="display:inline-block;width:12px;height:12px;background:rgba(27,58,107,.8);border-radius:2px;margin-right:4px;vertical-align:middle"></span>Expected (avg)</span>
+      <span><span style="display:inline-block;width:12px;height:12px;background:rgba(232,160,32,.8);border-radius:2px;margin-right:4px;vertical-align:middle"></span>Actual (avg)</span>
+    </div>
+  </div>
+
+  <!-- Filter + Table -->
+  <div class="card" style="margin-bottom:16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+    <span style="font-weight:600;font-size:.85rem;color:var(--P)">กรอง:</span>
+    <select id="gapDept" style="padding:8px 12px;border:1.5px solid #ddd;border-radius:8px;font-family:'Prompt',sans-serif;font-size:.85rem" onchange="renderTeamGap()"><option value="">-- ทุกแผนก --</option></select>
+    <select id="gapEmpF" style="padding:8px 12px;border:1.5px solid #ddd;border-radius:8px;font-family:'Prompt',sans-serif;font-size:.85rem" onchange="renderTeamGap()"><option value="">-- ทุกคน --</option></select>
+    <button class="btn" style="padding:7px 14px;font-size:.82rem;margin-left:auto" onclick="expTeamGap()"><i class="fas fa-download"></i> Export CSV</button>
+  </div>
+  <div class="card">
+    <div id="teamGapEmpty" style="text-align:center;padding:40px;color:var(--mu)"><i class="fas fa-chart-bar" style="font-size:2rem;display:block;margin-bottom:10px"></i>ยังไม่มีข้อมูล — กรุณาบันทึกผลการประเมินก่อน</div>
+    <div id="teamGapTable" class="hid" style="overflow-x:auto">
+      <table class="gap-table"><thead><tr><th>พนักงาน</th><th>ตำแหน่ง</th><th>Skill</th><th style="text-align:center">Exp</th><th style="text-align:center">Actual</th><th style="text-align:center">GAP</th><th>วันที่</th></tr></thead>
+      <tbody id="gapTbody"></tbody></table>
+    </div>
+  </div>
+
+  <!-- HR Admin: Reset Password Card -->
+  <div class="card" id="resetPwCard" style="display:none;margin-top:16px;border-left:4px solid #E8A020">
+    <div class="ct" style="margin-bottom:12px"><i class="fas fa-unlock-alt" style="color:#E8A020"></i> จัดการรหัสผ่านพนักงาน <span style="font-size:.74rem;font-weight:400;color:#94A3B8">(HR Admin เท่านั้น)</span></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
+      <div style="flex:1;min-width:200px">
+        <label style="display:block;font-size:.78rem;color:#64748B;margin-bottom:4px">Employee ID ที่ต้องการ Reset</label>
+        <input id="resetEmpId" type="text" placeholder="เช่น 66035"
+          style="width:100%;padding:9px 12px;border:1.5px solid #CBD5E1;border-radius:8px;font-family:'Prompt',sans-serif;font-size:.86rem;box-sizing:border-box;outline:none"
+          onkeydown="if(event.key==='Enter')doResetPw()" />
+      </div>
+      <button onclick="doResetPw()" style="padding:10px 20px;background:#1B3A6B;color:#fff;border:none;border-radius:8px;font-family:'Prompt',sans-serif;font-size:.86rem;font-weight:600;cursor:pointer;white-space:nowrap">
+        <i class="fas fa-redo-alt"></i> Reset รหัสผ่าน
+      </button>
+    </div>
+    <p style="font-size:.74rem;color:#94A3B8;margin:10px 0 0"><i class="fas fa-info-circle"></i> รหัสผ่านจะถูก Reset เป็น "รหัสพนักงาน" และพนักงานจะถูกบังคับเปลี่ยนรหัสผ่านในการ Login ครั้งถัดไป</p>
+  </div>
+
 </div>
+</main>
+</div><!-- /app-layout -->
 
 <div class="mo" id="ai-mo">
   <div class="mbox">
@@ -333,12 +503,200 @@ input[readonly]{background:#F8FAFC}
 var EMP = []; // โหลดจาก Google Sheet (ดู loadEmployees ด้านล่าง)
 var EMP_LOADED = false;
 
-var SURL = "https://script.google.com/macros/s/AKfycby2_5hASabfaZ4ALkN_Of1HvR3Q0GwISpA_El6fiwI0cTfVXVDJi2oCUY3XW9jaVTMUGQ/exec";
+var SURL = "https://script.google.com/macros/s/AKfycbwRU1vSvDrLMetTIlALGPqjZqIJ7fG8rYsBQxi6gBnHgdwIxpb_Ly6P2iWqq2vELLF40g/exec"; // GAS v4 - fixed 2026-09-24
 var emp = null;
 var ad = [];
-var dr = [];
+var dr = [
+  {id:'66001',nm:'สมชาย ใจดี',ps:'Engineer',dp:'Production',cd:'ENG-001',sk:'Structural Analysis',e:3,a:2,g:-1,dt:'2026-09-20'},
+  {id:'66001',nm:'สมชาย ใจดี',ps:'Engineer',dp:'Production',cd:'ENG-002',sk:'AutoCAD / CAD Drafting',e:3,a:3,g:0,dt:'2026-09-20'},
+  {id:'66001',nm:'สมชาย ใจดี',ps:'Engineer',dp:'Production',cd:'ENG-003',sk:'Process Control',e:2,a:1,g:-1,dt:'2026-09-20'},
+  {id:'66001',nm:'สมชาย ใจดี',ps:'Engineer',dp:'Production',cd:'ENG-004',sk:'Quality Inspection',e:2,a:2,g:0,dt:'2026-09-20'},
+  {id:'66002',nm:'สมหญิง รักงาน',ps:'Senior Engineer',dp:'Maintenance',cd:'ENG-001',sk:'Structural Analysis',e:4,a:3,g:-1,dt:'2026-09-21'},
+  {id:'66002',nm:'สมหญิง รักงาน',ps:'Senior Engineer',dp:'Maintenance',cd:'MNT-001',sk:'Preventive Maintenance',e:4,a:4,g:0,dt:'2026-09-21'},
+  {id:'66002',nm:'สมหญิง รักงาน',ps:'Senior Engineer',dp:'Maintenance',cd:'MNT-002',sk:'Hydraulic Systems',e:3,a:2,g:-1,dt:'2026-09-21'},
+  {id:'66003',nm:'ประสิทธิ์ มั่นคง',ps:'Supervisor',dp:'Production',cd:'ENG-001',sk:'Structural Analysis',e:3,a:1,g:-2,dt:'2026-09-22'},
+  {id:'66003',nm:'ประสิทธิ์ มั่นคง',ps:'Supervisor',dp:'Production',cd:'ENG-002',sk:'AutoCAD / CAD Drafting',e:2,a:2,g:0,dt:'2026-09-22'},
+  {id:'66003',nm:'ประสิทธิ์ มั่นคง',ps:'Supervisor',dp:'Production',cd:'HR-001',sk:'Team Leadership',e:3,a:2,g:-1,dt:'2026-09-22'},
+  {id:'66004',nm:'วิภา สุขใส',ps:'HR Officer',dp:'HR',cd:'HR-001',sk:'Team Leadership',e:2,a:3,g:1,dt:'2026-09-23'},
+  {id:'66004',nm:'วิภา สุขใส',ps:'HR Officer',dp:'HR',cd:'HR-002',sk:'Training & Development',e:3,a:3,g:0,dt:'2026-09-23'},
+  {id:'66004',nm:'วิภา สุขใส',ps:'HR Officer',dp:'HR',cd:'HR-003',sk:'Recruitment Process',e:2,a:1,g:-1,dt:'2026-09-23'}
+];
 var radar = null;
+var radarChartInst = null;
 var ais = [];
+
+// === Team Radar Chart ===
+function renderTeamRadar(data) {
+  var radarEmpty = document.getElementById('radarEmpty');
+  var radarWrap = document.getElementById('radarWrap');
+  var radarLegend = document.getElementById('radarLegend');
+  if (!data || !data.length) {
+    if (radarEmpty) radarEmpty.classList.remove('hid');
+    if (radarWrap) radarWrap.classList.add('hid');
+    if (radarLegend) radarLegend.classList.add('hid');
+    return;
+  }
+  var skillMap = {};
+  data.forEach(function(r) {
+    var k = r.sk;
+    if (!skillMap[k]) skillMap[k] = {sumE:0,sumA:0,cnt:0};
+    skillMap[k].sumE += (r.e||0);
+    skillMap[k].sumA += (r.a||0);
+    skillMap[k].cnt++;
+  });
+  var skills = Object.keys(skillMap).slice(0,12);
+  if (skills.length < 2) {
+    if (radarEmpty) radarEmpty.classList.remove('hid');
+    if (radarWrap) radarWrap.classList.add('hid');
+    if (radarLegend) radarLegend.classList.add('hid');
+    return;
+  }
+  if (radarEmpty) radarEmpty.classList.add('hid');
+  if (radarWrap) radarWrap.classList.remove('hid');
+  if (radarLegend) { radarLegend.classList.remove('hid'); radarLegend.style.display='flex'; }
+  var labels = skills.map(function(s){ return s.length>20 ? s.substring(0,18)+'...' : s; });
+  var expData = skills.map(function(s){ return +(skillMap[s].sumE/skillMap[s].cnt).toFixed(2); });
+  var actData = skills.map(function(s){ return +(skillMap[s].sumA/skillMap[s].cnt).toFixed(2); });
+  var ctx = document.getElementById('teamRadarChart').getContext('2d');
+  if (radarChartInst) { radarChartInst.destroy(); radarChartInst = null; }
+  radarChartInst = new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: labels,
+      datasets: [
+        { label: 'Expected (avg)', data: expData,
+          backgroundColor: 'rgba(27,58,107,0.12)', borderColor: 'rgba(27,58,107,0.85)',
+          borderWidth: 2.5, pointBackgroundColor: '#1B3A6B', pointRadius: 4 },
+        { label: 'Actual (avg)', data: actData,
+          backgroundColor: 'rgba(232,160,32,0.15)', borderColor: 'rgba(232,160,32,0.9)',
+          borderWidth: 2.5, pointBackgroundColor: '#E8A020', pointRadius: 4 }
+      ]
+    },
+    options: {
+      responsive: true,
+      scales: { r: { min:0, max:4, ticks:{ stepSize:1, font:{size:11},
+          callback: function(v){ return v===0?'':v; }},
+        pointLabels:{ font:{size:11,family:"'Prompt',sans-serif"} },
+        grid:{ color:'rgba(0,0,0,.08)' }, angleLines:{ color:'rgba(0,0,0,.1)' } }},
+      plugins: {
+        legend:{ position:'bottom', labels:{ font:{size:11,family:"'Prompt',sans-serif"}, padding:12 }},
+        tooltip:{ callbacks:{ label: function(ctx){ return ctx.dataset.label+': '+ctx.parsed.r.toFixed(1); }}}
+      }
+    }
+  });
+}
+
+// === Team Status List ===
+function renderTeamStatus() {
+  var el = document.getElementById('teamStatusList');
+  if (!el) return;
+  var teamEmp = [];
+  if (window.TEAM_LIST && window.TEAM_LIST.length > 0) {
+    // ใช้ subordinate list จาก GAS (manager-employee mapping)
+    teamEmp = window.TEAM_LIST.map(function(t) {
+      var found = null;
+      for (var i = 0; i < EMP.length; i++) { if (String(EMP[i].id) === String(t.id)) { found = EMP[i]; break; } }
+      return found || { id: t.id, name: t.name || t.id, position: t.position || '', dept: t.dept || '' };
+    });
+  } else if (currentRole === 'manager' && currentUser && currentUser.dept) {
+    teamEmp = EMP.filter(function(e){ return (e.dept||'').toLowerCase() === (currentUser.dept||'').toLowerCase(); });
+  } else {
+    var seenIds = [...new Set(dr.map(function(r){ return r.id; }))];
+    teamEmp = seenIds.map(function(sid){
+      var found = null;
+      for(var i=0;i<EMP.length;i++){ if(String(EMP[i].id)===String(sid)){found=EMP[i];break;} }
+      if(!found){ var rr=dr.find(function(x){return x.id===sid;}); found={id:sid,name:rr?rr.nm:sid,position:rr?rr.ps:'',dept:rr?rr.dp:''}; }
+      return found;
+    });
+  }
+  if (!teamEmp.length) {
+    el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--mu);grid-column:1/-1">ไม่พบข้อมูลพนักงานในทีม</div>';
+    return;
+  }
+  var assessedIds = new Set(dr.map(function(r){ return String(r.id); }));
+  el.innerHTML = teamEmp.map(function(e) {
+    var assessed = assessedIds.has(String(e.id));
+    var statusIcon = assessed ? '&#10003;' : '&#x231B;';
+    var statusTxt  = assessed ? 'ประเมินแล้ว' : 'ยังไม่ประเมิน';
+    var statusClr  = assessed ? '#22C55E' : '#F59E0B';
+    var cardBg     = assessed ? '#F0FDF4' : '#FFFBEB';
+    var cardBdr    = assessed ? '#BBF7D0' : '#FDE68A';
+    return '<div onclick="selectTeamMember(\'' + e.id + '\')" style="background:'+cardBg+';border:1.5px solid '+cardBdr+';border-radius:10px;padding:12px 14px;cursor:pointer;transition:transform .15s,box-shadow .15s" onmouseover="this.style.transform=\'translateY(-2px)\';this.style.boxShadow=\'0 4px 14px rgba(0,0,0,.1)\'" onmouseout="this.style.transform=\'none\';this.style.boxShadow=\'none\'">' +
+      '<div style="font-weight:700;font-size:.88rem;color:#1B3A6B;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + (e.name||e.id) + '</div>' +
+      '<div style="font-size:.76rem;color:#64748B;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + (e.position||'-') + ' &middot; ' + (e.dept||'-') + '</div>' +
+      '<div style="margin-top:7px;font-size:.82rem;font-weight:600;color:'+statusClr+'">' + statusIcon + ' ' + statusTxt + '</div>' +
+      '<div style="font-size:.72rem;color:#94A3B8;margin-top:2px">' + e.id + '</div>' +
+      '</div>';
+  }).join('');
+}
+
+function selectTeamMember(id) {
+  var e = null;
+  for (var i = 0; i < EMP.length; i++) { if (String(EMP[i].id) === String(id)) { e = EMP[i]; break; } }
+  if (!e) {
+    var rr = dr.find(function(x){ return x.id===id; });
+    if (rr) e = {id:rr.id,name:rr.nm,position:rr.ps||'',dept:rr.dp||'',company:'',grade:'',division:'',section:''};
+  }
+  if (!e) { showToast('ไม่พบข้อมูลพนักงาน', 'er'); return; }
+  goPage(1);
+  setTimeout(function(){
+    document.getElementById('q').value = e.name + ' (' + e.id + ')';
+    pickEmp(e.id);
+    showToast('เลือก ' + e.name + ' — กด เริ่มประเมิน', 'ok');
+  }, 150);
+}
+
+// === Save Draft ===
+var DRAFT_KEY = 'skill_assess_draft_v1';
+
+function saveDraft() {
+  if (!emp) { showToast('กรุณาเลือกพนักงานก่อน', 'er'); return; }
+  var draft = { emp: emp, ad: ad, dt: document.getElementById('dt').value, savedAt: new Date().toISOString() };
+  try {
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+    showToast('บันทึก Draft แล้ว — ' + emp.name, 'ok');
+  } catch(ex) { showToast('บันทึกไม่ได้: ' + ex.message, 'er'); }
+}
+
+function checkDraft() {
+  try {
+    var raw = localStorage.getItem(DRAFT_KEY);
+    if (!raw) return;
+    var draft = JSON.parse(raw);
+    if (!draft || !draft.emp) return;
+    var banner = document.getElementById('draftBanner');
+    var info   = document.getElementById('draftInfo');
+    if (banner && info) {
+      var d = new Date(draft.savedAt);
+      info.textContent = draft.emp.name + ' (' + draft.emp.id + ') — ' + d.toLocaleDateString('th-TH') + ' ' + d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'}) + ' | Skill ' + (draft.ad||[]).length + ' รายการ';
+      banner.classList.remove('hid');
+      banner.style.display = 'flex';
+    }
+  } catch(ex) { /* ignore */ }
+}
+
+function loadDraft() {
+  try {
+    var raw = localStorage.getItem(DRAFT_KEY);
+    if (!raw) return;
+    var draft = JSON.parse(raw);
+    if (!draft || !draft.emp) return;
+    emp = draft.emp; ad = draft.ad || [];
+    pickEmp(emp.id);
+    if (draft.dt) document.getElementById('dt').value = draft.dt;
+    var banner = document.getElementById('draftBanner');
+    if (banner) { banner.classList.add('hid'); banner.style.display='none'; }
+    showToast('โหลด Draft แล้ว — ' + emp.name, 'ok');
+    document.getElementById('btnSaveDraft').style.display = '';
+  } catch(ex) { showToast('โหลด Draft ไม่ได้', 'er'); }
+}
+
+function discardDraft() {
+  localStorage.removeItem(DRAFT_KEY);
+  var banner = document.getElementById('draftBanner');
+  if (banner) { banner.classList.add('hid'); banner.style.display='none'; }
+  showToast('ล้าง Draft แล้ว', 'ok');
+}
 
 
 // ─────────────────────────────────────────────────────
@@ -347,30 +705,311 @@ var ais = [];
 // ─────────────────────────────────────────────────────
 async function loadEmployees() {
   var statusEl = document.getElementById('empLoadStatus');
+
+  // ── ใช้ EMP_FALLBACK ก่อนทันที (ไม่ต้องรอ GAS) ───────────────────
+  if (window.EMP_FALLBACK && window.EMP_FALLBACK.length > 0) {
+    EMP = window.EMP_FALLBACK;
+    EMP_LOADED = true;
+    if (statusEl) statusEl.textContent = '✅ พนักงาน ' + EMP.length + ' คน (offline)';
+    console.log('✅ EMP_FALLBACK loaded:', EMP.length, 'records');
+  }
+
+  // ── โหลด GAS ใน background (timeout 5 วิ) เพื่ออัปเดตถ้ามี Employees tab ───
   try {
+    var ctrl = new AbortController();
+    var timer = setTimeout(function(){ ctrl.abort(); }, 5000);
     var url = SURL + '?action=getEmployees&_t=' + Date.now();
-    var res = await fetch(url);
+    var res = await fetch(url, { signal: ctrl.signal });
+    clearTimeout(timer);
     var json = await res.json();
     if (json.employees && json.employees.length > 0) {
       EMP = json.employees;
       EMP_LOADED = true;
-      console.log('✅ Loaded', EMP.length, 'employees from Google Sheet');
-      if (statusEl) statusEl.textContent = '✅ โหลดพนักงาน ' + EMP.length + ' คน';
-    } else {
-      throw new Error('Empty employee list');
+      if (statusEl) statusEl.textContent = '✅ พนักงาน ' + EMP.length + ' คน (Google Sheet)';
+      console.log('✅ GAS employees updated:', EMP.length, 'records');
     }
+    // ถ้า GAS return empty → คงใช้ EMP_FALLBACK ต่อ (ไม่ต้องทำอะไร)
   } catch(e) {
-    console.warn('⚠️ Could not load employees from Sheet:', e.message);
-    // fallback: ใช้ข้อมูลใน HTML ที่ preload ไว้ (ถ้ามี)
-    if (window.EMP_FALLBACK && window.EMP_FALLBACK.length > 0) {
-      EMP = window.EMP_FALLBACK;
-      EMP_LOADED = true;
-      if (statusEl) statusEl.textContent = '⚠️ ใช้ข้อมูล offline (' + EMP.length + ' คน)';
-    } else {
-      if (statusEl) statusEl.textContent = '❌ โหลดพนักงานไม่ได้ — ตรวจสอบ GAS';
-    }
+    console.warn('⚠️ GAS getEmployees failed/timeout (using fallback):', e.message);
+    // EMP_FALLBACK ถูก set ไว้แล้วด้านบน — ไม่ต้องทำอะไรเพิ่ม
   }
 }
+
+
+// ══ RBAC ════════════════════════════════════════════════════════
+var currentRole = null;  // 'hr_admin' | 'manager'
+var currentUser = null;  // {id, name, dept, ...}
+var pendingLoginEid = null; // เก็บ empId ระหว่างรอ doChangePw
+
+// === SHA-256 helper (Web Crypto API) ===
+async function hashPw(str) {
+  var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
+}
+
+// === ดึง subordinate list สำหรับ manager จาก GAS ===
+async function loadTeamFromGAS(managerId) {
+  try {
+    var ctrl = new AbortController();
+    setTimeout(function(){ ctrl.abort(); }, 8000);
+    var res = await fetch(SURL + '?action=getTeam&managerId=' + encodeURIComponent(managerId), { signal: ctrl.signal });
+    var json = await res.json();
+    if (json.team && Array.isArray(json.team) && json.team.length > 0) {
+      window.TEAM_LIST = json.team; // [{id, name, position, dept}, ...]
+      console.log('Team loaded from GAS:', json.team.length, 'members');
+    }
+  } catch(e) {
+    console.warn('getTeam fallback (offline):', e.message);
+    window.TEAM_LIST = null;
+  }
+}
+
+// Login ผ่าน GAS checkLogin → verifies EmpID + password hash
+async function doLogin() {
+  var eid = (document.getElementById('loginId').value || '').trim();
+  var pw  = (document.getElementById('loginPw').value  || '').trim();
+  if (!eid) { document.getElementById('loginErr').textContent = 'กรุณากรอก Employee ID'; return; }
+  if (!pw)  { document.getElementById('loginErr').textContent = 'กรุณากรอกรหัสผ่าน'; document.getElementById('loginPw').focus(); return; }
+  document.getElementById('loginErr').textContent = '';
+
+  // Disable inputs during check
+  var setLoading = function(on) {
+    document.getElementById('loginId').disabled = on;
+    document.getElementById('loginPw').disabled = on;
+    document.querySelector('.login-btn').disabled = on;
+    document.querySelector('.login-btn').innerHTML = on ? '&#x23F3; กำลังตรวจสอบ...' : '<i class="fas fa-sign-in-alt"></i> เข้าสู่ระบบ';
+  };
+  setLoading(true);
+
+  var pwHash = await hashPw(pw);
+
+  try {
+    var ctrl = new AbortController();
+    setTimeout(function(){ ctrl.abort(); }, 8000);
+    var res = await fetch(SURL + '?action=checkLogin&empId=' + encodeURIComponent(eid) + '&pwHash=' + encodeURIComponent(pwHash), { signal: ctrl.signal });
+    var json = await res.json();
+
+    if (json.ok) {
+      currentRole = json.role;
+      currentUser = null;
+      for (var i = 0; i < EMP.length; i++) {
+        if (String(EMP[i].id).trim() === String(eid).trim()) { currentUser = EMP[i]; break; }
+      }
+      if (!currentUser) currentUser = { id: eid, name: json.name || eid, dept: json.dept || '', position: json.position || '' };
+
+      if (json.forceChange) {
+        // Force password change before entering app
+        setLoading(false);
+        document.getElementById('loginPw').value = '';
+        pendingLoginEid = eid;
+        openChangePwModal();
+        return;
+      }
+    } else {
+      // Server returned explicit error (wrong password / not found)
+      document.getElementById('loginErr').textContent = json.message || 'รหัสพนักงานหรือรหัสผ่านไม่ถูกต้อง';
+      setLoading(false);
+      return;
+    }
+  } catch(e) {
+    // FALLBACK (offline / GAS ยังไม่ deploy): ใช้ empId เป็น password
+    if (pw !== eid) {
+      document.getElementById('loginErr').textContent = 'รหัสผ่านไม่ถูกต้อง • Offline Mode: รหัสผ่าน = รหัสพนักงาน';
+      setLoading(false);
+      return;
+    }
+    currentRole = 'hr_admin';
+    currentUser = null;
+    for (var i = 0; i < EMP.length; i++) {
+      if (String(EMP[i].id).trim() === String(eid).trim()) { currentUser = EMP[i]; break; }
+    }
+    if (!currentUser) currentUser = { id: eid, name: eid, dept: '', position: '' };
+    console.warn('Auth fallback (offline mode):', e.message);
+  }
+
+  setLoading(false);
+  await loginSuccess(eid);
+}
+
+// เรียกหลัง auth ผ่าน (ทั้ง normal login และหลัง doChangePw)
+async function loginSuccess(eid) {
+  document.getElementById('loginOverlay').classList.add('hid');
+  document.getElementById('hdrUser').style.display = 'flex';
+  var roleLbl = currentRole === 'hr_admin' ? '&#x1F451; HR Admin' : '&#x1F454; Manager';
+  document.getElementById('hdrUserName').innerHTML = (currentUser ? currentUser.name : eid) + ' <span class="role-badge ' + (currentRole==='hr_admin'?'role-hr':'role-mgr') + '">' + roleLbl + '</span>';
+
+  document.getElementById('s5').classList.remove('hid');
+  document.getElementById('s5').style.display = 'flex';
+
+  // HR Admin only: show reset password card
+  var rpCard = document.getElementById('resetPwCard');
+  if (rpCard) rpCard.style.display = currentRole === 'hr_admin' ? 'block' : 'none';
+
+  // Manager: load subordinate list from GAS (manager-employee mapping in Google Sheet)
+  window.TEAM_LIST = null;
+  if (currentRole === 'manager') {
+    await loadTeamFromGAS(eid);
+  }
+
+  // EMP_DEPT fallback (ถ้า TEAM_LIST ไม่มี)
+  if (currentRole === 'manager' && !window.TEAM_LIST && currentUser && currentUser.dept) {
+    window.EMP_DEPT = EMP.filter(function(e){ return (e.dept||'').toLowerCase() === (currentUser.dept||'').toLowerCase(); });
+  } else {
+    window.EMP_DEPT = EMP;
+  }
+
+  renderTeamStatus();
+  renderTeamGap();
+  goPage(5);
+}
+
+// === Password Management Functions ===
+
+function openChangePwModal() {
+  var m = document.getElementById('changePwModal');
+  if (m) { m.style.display = 'flex'; setTimeout(function(){ document.getElementById('cpNew').focus(); }, 100); }
+}
+
+function closeChangePwModal() {
+  var m = document.getElementById('changePwModal');
+  if (m) m.style.display = 'none';
+  document.getElementById('cpNew').value = '';
+  document.getElementById('cpConf').value = '';
+  document.getElementById('cpErr').textContent = '';
+}
+
+async function doChangePw() {
+  var np = (document.getElementById('cpNew').value  || '').trim();
+  var cp = (document.getElementById('cpConf').value || '').trim();
+  var errEl = document.getElementById('cpErr');
+  if (!np || np.length < 6) { errEl.textContent = 'รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัวอักษร'; return; }
+  if (np !== cp) { errEl.textContent = 'รหัสผ่านไม่ตรงกัน กรุณากรอกใหม่'; return; }
+  errEl.textContent = '';
+
+  var eid = pendingLoginEid || (currentUser ? String(currentUser.id) : '');
+  if (!eid) { errEl.textContent = 'เกิดข้อผิดพลาด กรุณา Login ใหม่อีกครั้ง'; return; }
+
+  var npHash = await hashPw(np);
+  try {
+    var ctrl = new AbortController();
+    setTimeout(function(){ ctrl.abort(); }, 8000);
+    var res = await fetch(SURL + '?action=changePassword&empId=' + encodeURIComponent(eid) + '&newHash=' + encodeURIComponent(npHash), { signal: ctrl.signal });
+    var json = await res.json();
+    if (!json.ok) throw new Error(json.message || 'บันทึกไม่สำเร็จ');
+  } catch(e) {
+    // Offline graceful degradation — proceed anyway, warn
+    console.warn('changePassword warning (offline?):', e.message);
+  }
+  closeChangePwModal();
+  pendingLoginEid = null;
+  showToast('✓ ตั้งรหัสผ่านใหม่สำเร็จ', 'ok');
+  await loginSuccess(eid);
+}
+
+// HR Admin: Reset password ของพนักงานกลับเป็น empId
+async function doResetPw() {
+  var targetEid = (document.getElementById('resetEmpId').value || '').trim();
+  if (!targetEid) { showToast('กรุณากรอก Employee ID ที่ต้องการ Reset', 'er'); return; }
+  if (!confirm('ยืนยัน Reset รหัสผ่านของพนักงาน ' + targetEid + '?\n\nรหัสผ่านจะถูก Reset กลับเป็น \"รหัสพนักงาน\"\nและพนักงานต้องเปลี่ยนรหัสผ่านใหม่ในครั้งถัดไป')) return;
+  try {
+    var ctrl = new AbortController();
+    setTimeout(function(){ ctrl.abort(); }, 8000);
+    var adminId = currentUser ? String(currentUser.id) : '';
+    var res = await fetch(SURL + '?action=resetPassword&targetEmpId=' + encodeURIComponent(targetEid) + '&adminId=' + encodeURIComponent(adminId), { signal: ctrl.signal });
+    var json = await res.json();
+    if (json.ok) {
+      showToast('✓ Reset รหัสผ่านสำเร็จ: ' + targetEid, 'ok');
+      document.getElementById('resetEmpId').value = '';
+    } else {
+      showToast('Error: ' + (json.message || 'Reset ไม่สำเร็จ'), 'er');
+    }
+  } catch(e) {
+    showToast('GAS ไม่ตอบสนอง — ไม่สามารถ Reset ได้ขณะนี้', 'er');
+  }
+}
+
+function doLogout() {
+  currentRole = null; currentUser = null; window.TEAM_LIST = null; pendingLoginEid = null;
+  document.getElementById('loginOverlay').classList.remove('hid');
+  document.getElementById('hdrUser').style.display = 'none';
+  document.getElementById('loginId').value = '';
+  document.getElementById('loginPw').value = '';
+  document.getElementById('loginId').disabled = false;
+  document.getElementById('loginPw').disabled = false;
+  document.querySelector('.login-btn').disabled = false;
+  document.querySelector('.login-btn').innerHTML = '<i class="fas fa-sign-in-alt"></i> เข้าสู่ระบบ';
+  document.getElementById('loginErr').textContent = '';
+  // Reset resetPwCard visibility
+  var rpCard = document.getElementById('resetPwCard');
+  if (rpCard) rpCard.style.display = 'none';
+  // Reset state
+  emp = null; ad = []; dr = [];
+  goPage(1);
+}
+
+// ── Team GAP functions ──────────────────────────────────────────
+function renderTeamGap() {
+  var deptF = (document.getElementById('gapDept').value || '').toLowerCase();
+  var empF  = (document.getElementById('gapEmpF').value || '').toLowerCase();
+
+  // กรองข้อมูล dr (local assessment results)
+  var data = dr;
+  if (currentRole === 'manager' && currentUser && currentUser.dept) {
+    // Manager เห็นเฉพาะทีมของตัวเอง — เฉพาะกรณี dept ไม่ว่าง
+    data = dr.filter(function(r){ return (r.dp||'').toLowerCase() === (currentUser.dept||'').toLowerCase(); });
+  }
+  // ถ้า manager fallback (dept='') → เห็น dr ทั้งหมด
+  if (deptF) data = data.filter(function(r){ return (r.dp||'').toLowerCase().includes(deptF); });
+  if (empF)  data = data.filter(function(r){ return (r.id||'').toLowerCase().includes(empF) || (r.nm||'').toLowerCase().includes(empF); });
+
+  // Populate dept filter
+  var depts = [...new Set(dr.map(function(r){ return r.dp||''; }).filter(Boolean))].sort();
+  var deptSel = document.getElementById('gapDept');
+  var curDept = deptSel.value;
+  deptSel.innerHTML = '<option value="">-- ทุกแผนก --</option>' + depts.map(function(d){ return '<option value="'+d+'" '+(d===curDept?'selected':'')+'>'+d+'</option>'; }).join('');
+
+  // Populate emp filter
+  var emps = [...new Set(data.map(function(r){ return r.id+'|'+r.nm; }).filter(Boolean))].sort();
+  var empSel = document.getElementById('gapEmpF');
+  var curEmp = empSel.value;
+  empSel.innerHTML = '<option value="">-- ทุกคน --</option>' + emps.map(function(e){ var p=e.split('|'); return '<option value="'+p[0]+'" '+(p[0]===curEmp?'selected':'')+'>'+p[1]+' ('+p[0]+')</option>'; }).join('');
+
+  if (!data.length) {
+    document.getElementById('teamGapEmpty').classList.remove('hid');
+    document.getElementById('teamGapTable').classList.add('hid');
+    return;
+  }
+  document.getElementById('teamGapEmpty').classList.add('hid');
+  document.getElementById('teamGapTable').classList.remove('hid');
+
+  var rows = data.map(function(r){
+    var g = r.g || 0;
+    var gc = g < 0 ? 'gap-neg' : g > 0 ? 'gap-pos' : 'gap-zero';
+    var gs = g < 0 ? '▼ '+Math.abs(g) : g > 0 ? '▲ '+g : '—';
+    return '<tr><td>'+r.nm+'<br><span style="font-size:.75rem;color:var(--mu)">'+r.id+'</span></td>' +
+      '<td>'+r.ps+'</td><td>'+r.sk+'<br><span style="font-size:.75rem;color:var(--mu)">'+r.cd+'</span></td>' +
+      '<td style="text-align:center">'+r.e+'</td><td style="text-align:center">'+r.a+'</td>' +
+      '<td style="text-align:center" class="'+gc+'">'+gs+'</td><td style="font-size:.78rem">'+r.dt+'</td></tr>';
+  }).join('');
+  document.getElementById('gapTbody').innerHTML = rows;
+  renderTeamRadar(data);
+}
+
+function expTeamGap() {
+  var data = currentRole === 'manager' && currentUser
+    ? dr.filter(function(r){ return (r.dp||'') === (currentUser.dept||''); })
+    : dr;
+  if (!data.length) { showToast('ไม่มีข้อมูล', 'er'); return; }
+  var h = 'EmpID,Name,Position,Dept,SkillCode,SkillName,Expected,Actual,GAP,Date\n';
+  var rows = data.map(function(r){
+    return [r.id,'"'+r.nm+'"','"'+r.ps+'"','"'+r.dp+'"',r.cd,'"'+r.sk+'"',r.e,r.a,r.g,r.dt].join(',');
+  }).join('\n');
+  var blob = new Blob(['\uFEFF'+h+rows], {type:'text/csv;charset=utf-8'});
+  var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'team_gap_' + new Date().toISOString().split('T')[0] + '.csv'; a.click();
+  showToast('Export สำเร็จ', 'ok');
+}
+// ════════════════════════════════════════════════════════════════
 
 window.onload = function() {
   loadEmployees();
@@ -378,6 +1017,7 @@ window.onload = function() {
   try { dr = JSON.parse(localStorage.getItem('dr') || '[]'); } catch(e) { dr = []; }
   applyLang();
   updDash();
+  setTimeout(checkDraft, 300);
   console.log('EMP loaded:', EMP.length, 'records');
 };
 
@@ -429,6 +1069,7 @@ function pickEmp(id) {
   emp = e;
   document.getElementById('q').value = e.name + ' (' + e.id + ')';
   document.getElementById('eid').value = e.id;
+  document.getElementById('btnSaveDraft').style.display = '';
   document.getElementById('ename').value = e.name;
   document.getElementById('ip').textContent = e.position || '-';
   document.getElementById('igr').textContent = e.grade || '-';
@@ -567,7 +1208,7 @@ function showRes() {
         {label:'Actual', data: f.map(function(s){return s.a;}), borderColor:'#E8A020', backgroundColor:'rgba(232,160,32,.15)', borderWidth:2, pointBackgroundColor:'#E8A020'}
       ]
     },
-    options: {responsive:true, scales:{r:{min:0,max:4,ticks:{stepSize:1},pointLabels:{font:{size:11,family:'Sarabun'}}}}, plugins:{legend:{labels:{font:{family:'Sarabun'}}}}}
+    options: {responsive:true, scales:{r:{min:0,max:4,ticks:{stepSize:1},pointLabels:{font:{size:11,family:'Prompt'}}}}, plugins:{legend:{labels:{font:{family:'Prompt'}}}}}
   });
   goPage(3);
 }
@@ -613,26 +1254,58 @@ function newA() { clrForm(); ad = []; if (radar) { radar.destroy(); radar = null
 async function openAI() {
   if (!emp) { showToast('เลือกพนักงานก่อน', 'er'); return; }
   document.getElementById('ai-mo').classList.add('on');
-  document.getElementById('ai-b').innerHTML = '<div style="text-align:center;padding:28px;color:var(--mu)"><i class="fas fa-spinner" style="animation:spin 1s linear infinite;font-size:1.6rem;display:block;margin-bottom:8px"></i>กำลังวิเคราะห์ตำแหน่ง ' + emp.position + '...</div>';
+  document.getElementById('ai-b').innerHTML = '<div style="text-align:center;padding:28px;color:var(--mu)"><i class="fas fa-spinner" style="animation:spin 1s linear infinite;font-size:1.6rem;display:block;margin-bottom:8px"></i>กำลังโหลด Skill Dictionary...</div>';
+
+  // ── Step 1: โหลด Skill Dictionary จริงจาก GAS ──────────────────────
+  var dictSkills = [];
   try {
-    // ── GAS Proxy: ส่ง AI prompt ผ่าน GAS → Claude API ──
-    var aiPrompt = 'HR Skill Expert โรงงานเหล็ก\nตำแหน่ง:"' + emp.position + '" Grade:' + emp.grade + ' แผนก:' + emp.dept + '\nแนะนำ Skill 6-8 รายการ ไม่ซ้ำ TS01,TS06,TS08,TS09,TS15,TS17,TS76,CS04\nตอบ JSON array เท่านั้น:[{"code":"XX00","name":"Skill","exp":2,"reason":"เหตุผล"}]';
-    var aiContext = 'คุณเป็น HR Expert ที่เชี่ยวชาญการประเมิน Skill ในโรงงานอุตสาหกรรมเหล็ก';
-    var res = await fetch(SURL + '?action=ai&prompt=' + encodeURIComponent(aiPrompt) + '&context=' + encodeURIComponent(aiContext));
-    var data = await res.json();
-    if (data.error) throw new Error('AI Error: ' + data.error);
-    var txt = data.text || '';
-    ais = JSON.parse(txt.replace(/```json|```/g,'').trim());
-  } catch(e) {
-    ais = [
-      {code:'TS20', name:'Leadership', exp:3, reason:'จำเป็นสำหรับตำแหน่งนี้'},
-      {code:'TS30', name:'Project Management', exp:2, reason:'จัดการงาน'},
-      {code:'TS40', name:'Data Analysis', exp:2, reason:'วิเคราะห์ข้อมูล'},
-      {code:'CS10', name:'Technical Knowledge-Steel', exp:3, reason:'ความรู้อุตสาหกรรม'},
-      {code:'CS20', name:'Quality Management', exp:2, reason:'มาตรฐาน'}
-    ];
+    var ctrl2 = new AbortController();
+    setTimeout(function(){ ctrl2.abort(); }, 6000);
+    var dRes = await fetch(SURL + '?action=getSkills&position=' + encodeURIComponent(emp.position), { signal: ctrl2.signal });
+    var dJson = await dRes.json();
+    if (dJson.skills && dJson.skills.length > 0) {
+      dictSkills = dJson.skills; // [{code, name, exp}]
+    }
+  } catch(e) { console.warn('Dict load failed:', e.message); }
+
+  // ── Step 2: ถ้ามี skills จาก dictionary → ใช้โดยตรง ไม่ต้องเรียก AI ──
+  if (dictSkills.length > 0) {
+    ais = dictSkills.map(function(s){ return { code: s.code, name: s.name, exp: s.exp || 2, reason: 'จาก Skill Dictionary ตำแหน่งนี้' }; });
+  } else {
+    // ── Step 3: ไม่มีใน Dictionary → เรียก AI แต่ส่ง Skill Dictionary list ให้ AI เลือก ──
+    document.getElementById('ai-b').innerHTML = '<div style="text-align:center;padding:28px;color:var(--mu)"><i class="fas fa-spinner" style="animation:spin 1s linear infinite;font-size:1.6rem;display:block;margin-bottom:8px"></i>กำลังวิเคราะห์ด้วย AI...</div>';
+    try {
+      // สร้าง skill list จาก current ad เพื่อส่งให้ AI รู้ว่า code อะไรมีอยู่แล้ว
+      var existingCodes = ad.map(function(s){ return s.c; }).join(',');
+      var aiPrompt = 'ตำแหน่ง:"' + emp.position + '" Grade:' + emp.grade + ' แผนก:' + emp.dept +
+        '\nSkill ที่มีอยู่แล้ว (ห้ามแนะนำซ้ำ): ' + (existingCodes || '-') +
+        '\nแนะนำ Skill เพิ่มเติม 5-6 รายการ โดยใช้ Skill Code มาตรฐาน GJS/GST เท่านั้น' +
+        '\n⚠️ ห้ามสร้าง Code ใหม่ ใช้เฉพาะ code ที่มีใน Skill Dictionary ขององค์กร' +
+        '\nตอบ JSON array เท่านั้น: [{"code":"TS01","name":"ชื่อ Skill","exp":2,"reason":"เหตุผล"}]';
+      var aiContext = 'คุณเป็น HR Expert โรงงานเหล็ก GJS/GST Skill Code มาตรฐาน: TS01=Technical Knowledge, TS06=Problem Solving, TS08=Teamwork, TS09=Interpersonal, TS15=Communication, TS17=Process Improvement, TS19=Learning, TS68=HR Strategy, TS71=HR Resources, TS73=OD, TS75=Workforce, TS76=Safety, CS04=Safety Awareness';
+      var res = await fetch(SURL + '?action=ai&prompt=' + encodeURIComponent(aiPrompt) + '&context=' + encodeURIComponent(aiContext));
+      var data = await res.json();
+      if (data.error || !data.text) throw new Error('AI failed');
+      var txt = data.text || '';
+      ais = JSON.parse(txt.replace(/```json[\s\S]*?```|```/g,'').trim());
+    } catch(e) {
+      // Fallback: แสดงข้อความให้ติดต่อ HRD แทนการสร้าง code ปลอม
+      document.getElementById('ai-b').innerHTML =
+        '<div style="text-align:center;padding:24px">' +
+        '<i class="fas fa-exclamation-triangle" style="font-size:2rem;color:#E8A020;display:block;margin-bottom:12px"></i>' +
+        '<p style="font-weight:700;margin-bottom:8px">ไม่พบ Skill สำหรับตำแหน่ง "' + emp.position + '"</p>' +
+        '<p style="font-size:.83rem;color:var(--mu);margin-bottom:16px">กรุณาเพิ่ม Skill ด้วยตนเองจาก Skill Dictionary<br>หรือติดต่อ HRD เพื่อขอเพิ่ม Skill ใหม่ใน Dictionary</p>' +
+        '<a href="mailto:hrd@gjsteel.co.th" style="background:var(--P);color:#fff;padding:8px 20px;border-radius:8px;text-decoration:none;font-size:.85rem">📧 ติดต่อ HRD</a>' +
+        '</div>';
+      return;
+    }
   }
+
+  // ── Render skill list ─────────────────────────────────────────────
   var ahtml = '<p style="font-size:.81rem;color:var(--mu);margin-bottom:10px">แนะนำสำหรับ: <strong>' + emp.position + '</strong></p>';
+  if (dictSkills.length > 0) {
+    ahtml += '<p style="font-size:.75rem;color:#2e7d32;background:#e8f5e9;padding:6px 10px;border-radius:6px;margin-bottom:10px">✅ ข้อมูลจาก Skill Dictionary (ตรวจสอบแล้ว)</p>';
+  }
   for (var i = 0; i < ais.length; i++) {
     var s = ais[i];
     ahtml += '<div class="ai-item"><input type="checkbox" id="ai'+i+'" checked style="width:14px;height:14px;flex-shrink:0">';
@@ -640,6 +1313,10 @@ async function openAI() {
     ahtml += '<div style="font-size:.75rem;color:var(--mu);margin-top:1px">' + (s.reason||'') + '</div></div>';
     ahtml += '<span style="font-size:.79rem;color:var(--B);font-weight:600">Exp:' + s.exp + '</span></div>';
   }
+  // ── ปุ่มติดต่อ HRD สำหรับขอ Skill ใหม่ ─────────────────────────
+  ahtml += '<div style="margin-top:14px;padding:10px 12px;background:#f5f5f5;border-radius:8px;font-size:.78rem;color:var(--mu)">';
+  ahtml += '💡 ต้องการ Skill ที่ไม่มีใน Dictionary? ';
+  ahtml += '<a href="mailto:hrd@gjsteel.co.th" style="color:var(--P);font-weight:600">ติดต่อ HRD เพื่อเพิ่ม Skill ใหม่</a></div>';
   document.getElementById('ai-b').innerHTML = ahtml;
 }
 
@@ -728,15 +1405,21 @@ function clrDash() {
 }
 
 function goPage(n) {
-  for (var i = 1; i <= 4; i++) document.getElementById('pg' + i).classList.toggle('hid', i !== n);
-  var ids = ['s1','s2','s3','s4'];
+  for (var i = 1; i <= 5; i++) {
+    var p = document.getElementById('pg' + i);
+    if (p) p.classList.toggle('hid', i !== n);
+  }
+  var ids = ['s1','s2','s3','s4','s5'];
   for (var i = 0; i < ids.length; i++) {
     var el = document.getElementById(ids[i]);
+    if (!el) continue;
     el.classList.remove('on','dn');
     if (i + 1 === n) el.classList.add('on');
     else if (i + 1 < n) el.classList.add('dn');
   }
+  if (n === 5) renderTeamGap();
   window.scrollTo(0, 0);
+  closeSidebar();
 }
 
 function showToast(msg, type) {
@@ -915,6 +1598,19 @@ function applyLang() {
   var de = document.getElementById('d-empty');
   if (de) de.innerHTML = '<i class="fas fa-chart-bar" style="font-size:2.3rem;opacity:.2;display:block;margin-bottom:8px"></i>' + L.dashEmpty;
 }
+
+// ── SIDEBAR TOGGLE (mobile) ──────────────────────────────────────────────────
+function toggleSidebar() {
+  var sb = document.getElementById('sidebar');
+  var ov = document.getElementById('sidebarOverlay');
+  var open = sb.classList.toggle('open');
+  ov.classList.toggle('on', open);
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('on');
+}
+
 
 </script>
 </body>
