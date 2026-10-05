@@ -177,6 +177,7 @@ input[readonly]{background:#F8FAFC}
 .role-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:.78rem;font-weight:700;margin:0 4px}
 .role-mgr{background:#e3f2fd;color:#1565c0}
 .role-hr{background:#f3e5f5;color:#6a1b9a}
+.role-emp{background:#e8f5e9;color:#2e7d32}
 .gap-table{width:100%;border-collapse:collapse;font-size:.82rem}
 .gap-table th{background:var(--P);color:#fff;padding:10px 12px;text-align:left}
 .gap-table td{padding:9px 12px;border-bottom:1px solid #eee}
@@ -213,7 +214,7 @@ input[readonly]{background:#F8FAFC}
       onkeydown="if(event.key==='Enter')doLogin()" autocomplete="off" style="margin-top:8px" />
     <button class="login-btn" onclick="doLogin()"><i class="fas fa-sign-in-alt"></i> เข้าสู่ระบบ</button>
     <div class="login-err" id="loginErr"></div>
-    <p style="font-size:.75rem;color:var(--mu);margin-top:18px">ลืมรหัสผ่าน? ติดต่อ HRD เพื่อ Reset</p>
+    <p style="font-size:.75rem;color:var(--mu);margin-top:18px">ลืมรหัสผ่าน ติดต่อ HRD Admin &nbsp;|&nbsp; พนักงาน login ด้วย รหัสพนักงาน เป็น Password</p>
   </div>
 </div>
 <button class="ham-btn" id="hamBtn" onclick="toggleSidebar()" aria-label="เมนู"><i class="fas fa-bars"></i></button>
@@ -258,6 +259,7 @@ input[readonly]{background:#F8FAFC}
     <div class="si" id="s3" onclick="goPage(3)"><div class="sn">3</div><span id="s3-lbl">ผลการประเมิน</span></div>
     <div class="si" id="s4" onclick="goPage(4)"><div class="sn">4</div><span id="s4-lbl">Dashboard</span></div>
     <div class="si hid" id="s5" onclick="goPage(5)"><div class="sn"><i class="fas fa-users" style="font-size:.72rem"></i></div><span id="s5-lbl">Team GAP</span></div>
+    <div class="si hid" id="s6" onclick="goPage(6)"><div class="sn"><i class="fas fa-user" style="font-size:.72rem"></i></div><span id="s6-lbl">Skill ของฉัน</span></div>
   </nav>
 </aside>
 
@@ -483,6 +485,40 @@ input[readonly]{background:#F8FAFC}
   </div>
 
 </div>
+
+<!-- ══ PAGE 6: Employee Self-View ══ -->
+<div id="pg6" class="hid">
+  <h2 class="card-t"><i class="fas fa-user-circle" style="color:var(--P)"></i> Skill ของฉัน</h2>
+
+  <!-- Employee Info Card -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="ct"><i class="fas fa-id-card"></i> ข้อมูลพนักงาน</div>
+    <div class="eg" style="grid-template-columns:repeat(2,1fr);gap:10px">
+      <div class="ef"><label>ชื่อ-นามสกุล</label><span id="ev-name">-</span></div>
+      <div class="ef"><label>รหัสพนักงาน</label><span id="ev-id">-</span></div>
+      <div class="ef"><label>ตำแหน่ง</label><span id="ev-pos">-</span></div>
+      <div class="ef"><label>แผนก / หน่วยงาน</label><span id="ev-dept">-</span></div>
+    </div>
+  </div>
+
+  <!-- Expected Skills Table -->
+  <div class="card">
+    <div class="ct"><i class="fas fa-list-check"></i> Skill ที่คาดหวังสำหรับตำแหน่งของคุณ
+      <span style="margin-left:auto;font-size:.73rem;color:var(--mu);font-weight:400">(read-only — ข้อมูลอ้างอิงจาก JD Database)</span>
+    </div>
+    <div id="emp-view-content">
+      <div style="text-align:center;padding:32px;color:var(--mu)">
+        <i class="fas fa-spinner" style="font-size:1.8rem;display:block;margin-bottom:10px;animation:spin 1s linear infinite"></i>
+        กำลังโหลดข้อมูล...
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:10px;padding:10px 14px;background:#FFF7ED;border:1px solid #FED7AA;border-radius:8px;font-size:.8rem;color:#92400E">
+    <i class="fas fa-info-circle"></i>&nbsp; หน้านี้แสดงเฉพาะ <strong>ระดับ Skill ที่คาดหวัง</strong> ตามตำแหน่งงาน เพื่อดูผลการประเมินจริงหรือแผน IDP กรุณาติดต่อ HRD Admin
+  </div>
+</div>
+
 </main>
 </div><!-- /app-layout -->
 
@@ -737,7 +773,7 @@ async function loadEmployees() {
 
 
 // ══ RBAC ════════════════════════════════════════════════════════
-var currentRole = null;  // 'hr_admin' | 'manager'
+var currentRole = null;  // 'hr_admin' | 'manager' | 'employee'
 var currentUser = null;  // {id, name, dept, ...}
 var pendingLoginEid = null; // เก็บ empId ระหว่างรอ doChangePw
 
@@ -835,15 +871,38 @@ async function doLogin() {
 async function loginSuccess(eid) {
   document.getElementById('loginOverlay').classList.add('hid');
   document.getElementById('hdrUser').style.display = 'flex';
-  var roleLbl = currentRole === 'hr_admin' ? '&#x1F451; HR Admin' : '&#x1F454; Manager';
-  document.getElementById('hdrUserName').innerHTML = (currentUser ? currentUser.name : eid) + ' <span class="role-badge ' + (currentRole==='hr_admin'?'role-hr':'role-mgr') + '">' + roleLbl + '</span>';
 
+  // Role badge label
+  var roleLbl, roleCls;
+  if (currentRole === 'hr_admin')  { roleLbl = '&#x1F451; HR Admin'; roleCls = 'role-hr'; }
+  else if (currentRole === 'manager') { roleLbl = '&#x1F454; Manager';  roleCls = 'role-mgr'; }
+  else { roleLbl = '&#x1F464; Employee'; roleCls = 'role-emp'; }
+  document.getElementById('hdrUserName').innerHTML = (currentUser ? currentUser.name : eid) + ' <span class="role-badge ' + roleCls + '">' + roleLbl + '</span>';
+
+  // ── Employee role → navigate to self-view page ────────────────────
+  if (currentRole === 'employee') {
+    // ซ่อน stepper steps 1-5 ทั้งหมด
+    ['s1','s2','s3','s4','s5'].forEach(function(id){
+      var el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+    // แสดง s6 (Skill ของฉัน)
+    var s6el = document.getElementById('s6');
+    if (s6el) { s6el.classList.remove('hid'); s6el.style.display = 'flex'; s6el.classList.add('on'); }
+    var rpCard = document.getElementById('resetPwCard');
+    if (rpCard) rpCard.style.display = 'none';
+    loadEmployeeView(eid);
+    goPage(6);
+    return;
+  }
+
+  // ── HR Admin / Manager ────────────────────────────────────────────
   document.getElementById('s5').classList.remove('hid');
   document.getElementById('s5').style.display = 'flex';
 
   // HR Admin only: show reset password card
-  var rpCard = document.getElementById('resetPwCard');
-  if (rpCard) rpCard.style.display = currentRole === 'hr_admin' ? 'block' : 'none';
+  var rpCard2 = document.getElementById('resetPwCard');
+  if (rpCard2) rpCard2.style.display = currentRole === 'hr_admin' ? 'block' : 'none';
 
   // Manager: load subordinate list from GAS (manager-employee mapping in Google Sheet)
   window.TEAM_LIST = null;
@@ -861,6 +920,63 @@ async function loginSuccess(eid) {
   renderTeamStatus();
   renderTeamGap();
   goPage(5);
+}
+
+// ── Employee Self-View: โหลด expected skills จาก GAS แล้วแสดง ──────
+async function loadEmployeeView(eid) {
+  var cont = document.getElementById('emp-view-content');
+  if (!cont) return;
+
+  // แสดงข้อมูลพนักงาน
+  var u = currentUser || { id: eid, name: eid, position: '', dept: '' };
+  document.getElementById('ev-name').textContent   = u.name || eid;
+  document.getElementById('ev-id').textContent     = u.id   || eid;
+  document.getElementById('ev-pos').textContent    = u.position || '-';
+  document.getElementById('ev-dept').textContent   = u.dept || '-';
+
+  cont.innerHTML = '<div style="text-align:center;padding:28px;color:var(--mu)"><i class="fas fa-spinner" style="animation:spin 1s linear infinite;font-size:1.4rem;display:block;margin-bottom:8px"></i>กำลังโหลด Skill ของคุณ...</div>';
+
+  // โหลด skills ที่คาดหวังสำหรับตำแหน่งนี้ จาก GAS
+  var skills = [];
+  try {
+    var ctrl = new AbortController();
+    setTimeout(function(){ ctrl.abort(); }, 8000);
+    var pos = encodeURIComponent(u.position || '');
+    var res = await fetch(SURL + '?action=getSkills&position=' + pos, { signal: ctrl.signal });
+    var json = await res.json();
+    if (json.skills && json.skills.length > 0) skills = json.skills;
+  } catch(e) { console.warn('getSkills fallback:', e.message); }
+
+  if (skills.length === 0) {
+    cont.innerHTML =
+      '<div style="text-align:center;padding:32px">' +
+      '<i class="fas fa-info-circle" style="font-size:2rem;color:var(--mu);display:block;margin-bottom:12px"></i>' +
+      '<p style="font-weight:700;margin-bottom:6px">ยังไม่มีข้อมูล Skill สำหรับตำแหน่งของคุณ</p>' +
+      '<p style="font-size:.83rem;color:var(--mu)">กรุณาติดต่อ HRD Admin เพื่อดูผลการประเมินของคุณ<br>' +
+      '<a href="mailto:hrd@gjsteel.co.th" style="color:var(--P);font-weight:600">hrd@gjsteel.co.th</a></p>' +
+      '</div>';
+    return;
+  }
+
+  var html = '<table style="width:100%;border-collapse:collapse;font-size:.87rem">';
+  html += '<thead><tr style="background:var(--P);color:#fff">';
+  html += '<th style="padding:9px 10px;text-align:left">ทักษะ</th>';
+  html += '<th style="padding:9px 6px;text-align:center;width:80px">Code</th>';
+  html += '<th style="padding:9px 6px;text-align:center;width:100px">ระดับที่คาดหวัง</th>';
+  html += '<th style="padding:9px 10px;text-align:center;width:120px">สถานะ</th></tr></thead><tbody>';
+  for (var i = 0; i < skills.length; i++) {
+    var sk = skills[i];
+    var bg = i % 2 === 0 ? '#fff' : '#F8FAFC';
+    html += '<tr style="background:' + bg + ';border-bottom:1px solid var(--bd)">';
+    html += '<td style="padding:8px 10px">' + (sk.name || sk.n || '-') + '</td>';
+    html += '<td style="text-align:center"><span class="sc2">' + (sk.code || sk.c || '-') + '</span></td>';
+    html += '<td style="text-align:center"><span class="eb" style="width:24px;height:24px;font-size:.8rem">' + (sk.exp || sk.e || '-') + '</span></td>';
+    html += '<td style="text-align:center"><span style="background:#E0F2FE;color:#0369A1;padding:2px 10px;border-radius:20px;font-size:.78rem;font-weight:600">📋 ในแผนพัฒนา</span></td>';
+    html += '</tr>';
+  }
+  html += '</tbody></table>';
+  html += '<p style="font-size:.78rem;color:var(--mu);margin-top:14px;text-align:center">* ผลการประเมินจริงสามารถดูได้จาก HRD Admin &nbsp;|&nbsp; <a href="mailto:hrd@gjsteel.co.th" style="color:var(--P)">hrd@gjsteel.co.th</a></p>';
+  cont.innerHTML = html;
 }
 
 // === Password Management Functions ===
@@ -942,6 +1058,13 @@ function doLogout() {
   // Reset resetPwCard visibility
   var rpCard = document.getElementById('resetPwCard');
   if (rpCard) rpCard.style.display = 'none';
+  // Reset sidebar — restore s1-s5 in case previous session was employee role
+  ['s1','s2','s3','s4','s5'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) { el.style.display = ''; el.classList.remove('on','dn','hid'); }
+  });
+  var s6el = document.getElementById('s6');
+  if (s6el) { s6el.classList.add('hid'); s6el.style.display = 'none'; s6el.classList.remove('on'); }
   // Reset state
   emp = null; ad = []; dr = [];
   goPage(1);
@@ -1126,8 +1249,8 @@ function rndTbl() {
   var html = '';
   for (var i = 0; i < ad.length; i++) {
     var s = ad[i];
-    var gap = s.a > 0 ? fmtG(s.e - s.a) : '-';
-    var gc = s.a > 0 ? (s.e - s.a > 0 ? 'gp' : s.e - s.a < 0 ? 'gn' : 'gz') : '';
+    var gap = s.a > 0 ? fmtG(s.a - s.e) : '-';
+    var gc = s.a > 0 ? (s.a - s.e > 0 ? 'gp' : s.a - s.e < 0 ? 'gn' : 'gz') : '';
     html += '<tr>';
     html += '<td>' + (i+1) + '</td>';
     html += '<td><span class="sc2">' + s.c + '</span></td>';
@@ -1151,7 +1274,7 @@ function updG(i) {
   ad[i].a = a;
   var cell = document.getElementById('gc' + i);
   if (!a) { cell.textContent = '-'; cell.className = 'gc'; return; }
-  var g = ad[i].e - a;
+  var g = a - ad[i].e;
   cell.textContent = fmtG(g);
   cell.className = 'gc ' + (g > 0 ? 'gp' : g < 0 ? 'gn' : 'gz');
 }
@@ -1179,7 +1302,7 @@ function showRes() {
   if (!f.length) { showToast('กรุณากรอกคะแนน', 'er'); return; }
   var tg = 0;
   for (var i = 0; i < f.length; i++) tg += Math.max(0, f[i].e - f[i].a);
-  var mt = f.filter(function(s) { return s.e - s.a <= 0; }).length;
+  var mt = f.filter(function(s) { return s.a - s.e >= 0; }).length;
   var pc = Math.round(mt / f.length * 100);
   document.getElementById('ri').textContent = emp.id;
   document.getElementById('rn').textContent = emp.name;
@@ -1190,12 +1313,12 @@ function showRes() {
   document.getElementById('r-pct').textContent = pc + '%';
   var rhtml = '';
   for (var i = 0; i < f.length; i++) {
-    var s = f[i]; var g = s.e - s.a;
+    var s = f[i]; var g = s.a - s.e;
     rhtml += '<tr><td>' + s.n + ' <span class="sc2">' + s.c + '</span></td>';
     rhtml += '<td style="text-align:center"><span class="eb" style="width:22px;height:22px;font-size:.76rem">' + s.e + '</span></td>';
     rhtml += '<td style="text-align:center;font-weight:700">' + s.a + '</td>';
     rhtml += '<td class="gc ' + (g>0?'gp':g<0?'gn':'gz') + '">' + fmtG(g) + '</td>';
-    rhtml += '<td>' + (g <= 0 ? '<span style="color:var(--G);font-weight:700">✓ ตรงเป้า</span>' : '<span style="color:var(--R);font-weight:700">⚠ พัฒนา</span>') + '</td></tr>';
+    rhtml += '<td>' + (g >= 0 ? '<span style="color:var(--G);font-weight:700">✓ ตรงเป้า</span>' : '<span style="color:var(--R);font-weight:700">⚠ พัฒนา</span>') + '</td></tr>';
   }
   document.getElementById('rtb').innerHTML = rhtml;
   if (radar) radar.destroy();
@@ -1220,7 +1343,7 @@ function expCSV() {
   var rows = [];
   for (var i = 0; i < f.length; i++) {
     var s = f[i];
-    rows.push([emp.id, '"'+emp.name+'"', '"'+emp.position+'"', emp.grade, '"'+emp.dept+'"', '"'+emp.division+'"', dt, s.c, '"'+s.n+'"', s.e, s.a, s.e-s.a].join(','));
+    rows.push([emp.id, '"'+emp.name+'"', '"'+emp.position+'"', emp.grade, '"'+emp.dept+'"', '"'+emp.division+'"', dt, s.c, '"'+s.n+'"', s.e, s.a, s.a-s.e].join(','));
   }
   var blob = new Blob(['\uFEFF' + h + rows.join('\n')], {type:'text/csv;charset=utf-8'});
   var a = document.createElement('a');
@@ -1237,16 +1360,25 @@ async function syncSh() {
   var rows = [];
   for (var i = 0; i < f.length; i++) {
     var s = f[i];
-    rows.push([emp.id, emp.name, emp.position, emp.grade, emp.dept, emp.division, dt, s.c, s.n, s.e, s.a, s.e-s.a].join('\t'));
-    dr.push({dt:dt, id:emp.id, nm:emp.name, ps:emp.position, dp:emp.dept, co:emp.company, cd:s.c, sk:s.n, e:s.e, a:s.a, g:s.e-s.a});
+    rows.push([emp.id, emp.name, emp.position, emp.grade, emp.dept, emp.division, dt, s.c, s.n, s.e, s.a, s.a-s.e].join('\t'));
+    dr.push({dt:dt, id:emp.id, nm:emp.name, ps:emp.position, dp:emp.dept, co:emp.company, cd:s.c, sk:s.n, e:s.e, a:s.a, g:s.a-s.e});
   }
-  var url = SURL + '?action=save&data=' + encodeURIComponent(rows.join('\n'));
-  showToast('⏳ กำลังบันทึก...', 'in');
+  // v19 FIX: ส่งทีละ 1 Skill ต่อ request — URL ยาวเกิน ~12,000 ตัวอักษร Google จะปฏิเสธ
+  // (ภาษาไทย encode แล้วยาวขึ้น ~9 เท่า → ประเมิน 9+ Skill ในครั้งเดียว = ไม่ถึง Sheet)
   try { localStorage.setItem('dr', JSON.stringify(dr)); } catch(e) {}
-  var img = new Image();
-  img.onload = img.onerror = function() { showToast('✅ บันทึกสำเร็จ (' + f.length + ' Skill)', 'ok'); updDash(); };
-  img.src = url;
-  try { await fetch(url, {mode:'no-cors'}); } catch(e) {}
+  var ok = 0, fail = 0;
+  for (var k = 0; k < rows.length; k++) {
+    showToast('⏳ กำลังบันทึก ' + (k + 1) + '/' + rows.length + '...', 'in');
+    try {
+      var res = await fetch(SURL + '?action=save&data=' + encodeURIComponent(rows[k]));
+      var js = await res.json();
+      if (js && js.status === 'saved' && js.rows > 0) ok++; else fail++;
+    } catch(e) { fail++; console.warn('save row ' + (k + 1) + ' failed:', e.message); }
+  }
+  updDash();
+  if (fail === 0) showToast('✅ บันทึกลง Google Sheet สำเร็จ ' + ok + ' Skill', 'ok');
+  else if (ok > 0) showToast('⚠️ บันทึกได้ ' + ok + ' / ไม่สำเร็จ ' + fail + ' Skill — กดบันทึกซ้ำ', 'er');
+  else showToast('❌ บันทึกไม่สำเร็จ — ตรวจสอบอินเทอร์เน็ต (ข้อมูลยังเก็บในเครื่อง)', 'er');
 }
 
 function newA() { clrForm(); ad = []; if (radar) { radar.destroy(); radar = null; } goPage(1); }
@@ -1349,14 +1481,14 @@ function updDash() {
   for (var i = 0; i < dr.length; i++) {
     es[dr[i].id] = 1;
     ss[dr[i].dt + '_' + dr[i].id] = 1;
-    if (dr[i].g <= 0) mt++;
+    if (dr[i].g >= 0) mt++;
   }
   document.getElementById('d-emp').textContent = Object.keys(es).length;
   document.getElementById('d-ses').textContent = Object.keys(ss).length;
   document.getElementById('d-pct').textContent = Math.round(mt / dr.length * 100) + '%';
   document.getElementById('d-sk').textContent = dr.length;
   var gm = {};
-  for (var i = 0; i < dr.length; i++) { if (dr[i].g > 0) gm[dr[i].sk] = (gm[dr[i].sk] || 0) + dr[i].g; }
+  for (var i = 0; i < dr.length; i++) { if (dr[i].g < 0) gm[dr[i].sk] = (gm[dr[i].sk] || 0) + Math.abs(dr[i].g); }
   var top = Object.entries(gm).sort(function(a,b){ return b[1]-a[1]; }).slice(0,5);
   var mx = top.length ? top[0][1] : 1;
   var th = '';
@@ -1366,7 +1498,7 @@ function updDash() {
   }
   document.getElementById('d-top').innerHTML = th;
   var dm = {};
-  for (var i = 0; i < dr.length; i++) { if (!dm[dr[i].dp]) dm[dr[i].dp] = {t:0,m:0}; dm[dr[i].dp].t++; if (dr[i].g<=0) dm[dr[i].dp].m++; }
+  for (var i = 0; i < dr.length; i++) { if (!dm[dr[i].dp]) dm[dr[i].dp] = {t:0,m:0}; dm[dr[i].dp].t++; if (dr[i].g>=0) dm[dr[i].dp].m++; }
   var ds = Object.entries(dm).sort(function(a,b){ return b[1].t-a[1].t; }).slice(0,10);
   var mx2 = ds.length ? ds[0][1].t : 1;
   var dh = '';
@@ -1405,9 +1537,17 @@ function clrDash() {
 }
 
 function goPage(n) {
-  for (var i = 1; i <= 5; i++) {
+  for (var i = 1; i <= 6; i++) {
     var p = document.getElementById('pg' + i);
     if (p) p.classList.toggle('hid', i !== n);
+  }
+  // For employee role (n=6), just activate s6 and return
+  if (n === 6) {
+    var s6 = document.getElementById('s6');
+    if (s6) { s6.classList.remove('hid'); s6.classList.add('on'); s6.style.display = 'flex'; }
+    window.scrollTo(0, 0);
+    closeSidebar();
+    return;
   }
   var ids = ['s1','s2','s3','s4','s5'];
   for (var i = 0; i < ids.length; i++) {
