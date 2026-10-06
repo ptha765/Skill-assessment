@@ -921,9 +921,41 @@ async function loginSuccess(eid) {
     window.EMP_DEPT = EMP;
   }
 
+  await loadResults();   // v23: โหลดผลการประเมินจาก Google Sheet ทุกครั้งที่ login
   renderTeamStatus();
   renderTeamGap();
   goPage(5);
+}
+
+// ── v23: โหลดผลการประเมินจาก Google Sheet (Results tab) ────────────
+// เดิม: ข้อมูลอยู่ในเบราว์เซอร์เครื่องเดียว + logout ล้างทิ้ง → login ใหม่ไม่เห็นผล
+async function loadResults() {
+  try { dr = JSON.parse(localStorage.getItem('dr') || '[]'); } catch(e) { dr = []; }
+  showToast('⏳ กำลังโหลดผลการประเมินจาก Google Sheet...', 'in');
+  try {
+    var ctrl = new AbortController();
+    var tm = setTimeout(function(){ ctrl.abort(); }, 20000);
+    var res = await fetch(SURL + '?action=getResults&_t=' + Date.now(), { signal: ctrl.signal });
+    clearTimeout(tm);
+    var js = await res.json();
+    if (!js || !Array.isArray(js.results)) throw new Error((js && js.message) || 'GAS ยังไม่มี action getResults');
+    // เก็บเฉพาะรายการล่าสุดของ (พนักงาน + วันที่ + Skill) — กันข้อมูลซ้ำเมื่อกดบันทึกหลายครั้ง
+    var map = {};
+    js.results.forEach(function(r){
+      var e = Number(r.exp) || 0, a = Number(r.actual) || 0;
+      map[r.empId + '|' + r.date + '|' + r.code] = {
+        dt: String(r.date || ''), id: String(r.empId || ''), nm: r.name || '', ps: r.position || '',
+        dp: r.dept || '', co: '', cd: r.code || '', sk: r.skill || '', e: e, a: a, g: a - e
+      };
+    });
+    dr = Object.keys(map).map(function(k){ return map[k]; });
+    try { localStorage.setItem('dr', JSON.stringify(dr)); } catch(e) {}
+    showToast('✅ โหลดผลการประเมิน ' + dr.length + ' รายการ', 'ok');
+  } catch(e) {
+    console.warn('loadResults fallback (local only):', e.message);
+    showToast('⚠️ โหลดจาก Google Sheet ไม่ได้ — แสดงข้อมูลในเครื่องนี้ (' + dr.length + ' รายการ)', 'er');
+  }
+  updDash();
 }
 
 // ── Employee Self-View: โหลด expected skills จาก GAS แล้วแสดง ──────
